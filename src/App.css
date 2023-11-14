@@ -1,12 +1,12 @@
 /* styles.css */
 .dark-mode {
-  background-color: #121212;
+  background-color: #1f2937;
   color: #ffffff;
   /* other dark mode styles */
 }
 
 .light-mode {
-  background-color: #ffffff;
+  background-color: #eef1f5;
   color: #000000;
   /* other light mode styles */
 }

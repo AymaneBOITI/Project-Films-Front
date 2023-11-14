@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { MovieSummary } from '../services/types'; // Replace with your actual type imports
+import { MovieSummary } from '../services/types';
 
 
 interface MovieCardProps {
@@ -15,6 +15,10 @@ const Card = styled.div`
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  hover:{
+  transform: scale(1.1);
+};
 `;
 
 const Poster = styled.img`

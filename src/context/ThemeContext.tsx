@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-// Define the shape of the context data
 interface ThemeContextType {
     isDarkMode: boolean;
     toggleTheme: () => void;
@@ -17,7 +16,6 @@ interface ThemeProviderProps {
     children: ReactNode;
 }
 
-// Create a ThemeProvider component
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 

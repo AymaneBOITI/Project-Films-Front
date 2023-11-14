@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
+import unknown from '../assets/unknown.png';
 
 interface CreditsCardProps {
     name: string;
-    character?: string;
-    job?:string;
+    role: string;
     profilePath?: string;
 }
 
@@ -15,11 +15,14 @@ const Card = styled.div`
   text-align: center;
   padding: 16px;
   width: 150px;
+  margin-bottom: 16px;
 `;
 
 const ProfileImage = styled.img`
   width: 100%;
-  height: auto;
+  height: 225px; // Adjust the height as needed
+  object-fit: cover;
+  border-radius: 4px;
   margin-bottom: 8px;
 `;
 
@@ -34,16 +37,18 @@ const Role = styled.p`
   color: #666;
 `;
 
-const defaultProfileImage = '../assets/unknown.png';
+const defaultProfileImage = unknown;
 
-export const CreditsCard = ({ name, character, profilePath }: CreditsCardProps) => {
-    const imageUrl = profilePath ? `https://image.tmdb.org/t/p/original${profilePath}` : defaultProfileImage;
+export const CreditsCard = ({ name, role, profilePath }: CreditsCardProps) => {
+    const imageUrl = profilePath
+        ? `https://image.tmdb.org/t/p/original${profilePath}`
+        : defaultProfileImage;
 
     return (
         <Card>
             <ProfileImage src={imageUrl} alt={`Profile of ${name}`} />
             <Name>{name}</Name>
-            <Role>{character}</Role>
+            <Role>{role}</Role>
         </Card>
     );
 };

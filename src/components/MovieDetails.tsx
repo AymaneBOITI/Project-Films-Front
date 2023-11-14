@@ -1,70 +1,106 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { getMovieDetails } from '../services/apiService'; // Adjust the import path
-import { MovieDetails as MovieDetailsType } from '../services/types'; // Adjust the import path
+import { useParams } from 'react-router-dom';
+import { getMovieDetails } from '../services/apiService'; // Adjust the path as needed
 import CreditsCard from './CreditsCard';
+import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
 
 const DetailsContainer = styled.div`
   padding: 20px;
 `;
 
-const Title = styled.h1`
+const Section = styled.section`
+  margin-bottom: 20px;
+`;
+
+const Title = styled.h2`
+  margin: 0;
   color: #333;
 `;
 
-const Overview = styled.p`
+const Subtitle = styled.h3`
+  margin: 0;
   color: #666;
 `;
 
-const CreditsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+const Text = styled.p`
+  color: #333;
 `;
 
-export const MovieDetails = () => {
+const ScrollContainer = styled.div`
+  overflow-x: auto;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+const Image = styled.img`
+  max-height: 300px;
+  object-fit: cover;
+`;
+
+const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            if (id) {
-                const movieDetails = await getMovieDetails(parseInt(id));
-                setDetails(movieDetails);
-            }
-        };
-
-        fetchDetails();
+        if (id) {
+            getMovieDetails(parseInt(id)).then(setDetails);
+        }
     }, [id]);
-
-    if (!details) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <DetailsContainer>
-            <Title>{details.original_title}</Title>
-            <Overview>{details.overview}</Overview>
-            {/* Other movie details like genres, rating, etc. can be added here */}
-            <CreditsContainer>
-                {details.cast.map((person) => (
-                    <CreditsCard
-                        key={person.name}
-                        name={person.name}
-                        character={person.character}
-                        profilePath={person.profile_path}
-                    />
-                ))}
-                {details.crew.map((person) => (
-                    <CreditsCard
-                        key={person.name}
-                        name={person.name}
-                        profilePath={person.profile_path}
-                        job={person.job}/>
-                ))}
-            </CreditsContainer>
+            {details ? (
+                <>
+                    <Section>
+                        <Title>{details.original_title}</Title>
+                        <Text>{details.overview}</Text>
+                        {/* Assuming you have a way to format runtime nicely */}
+                        <Text>Runtime: {details.runtime} minutes</Text>
+                        <Text>Rating: {details.vote_average}</Text>
+                    </Section>
+
+                    <Section>
+                        <Subtitle>Cast</Subtitle>
+                        <ScrollContainer>
+                            {details.cast.map((cast: CastMember) => (
+                                <CreditsCard
+                                    key={cast.name}
+                                    name={cast.name}
+                                    role={cast.character}
+                                    profilePath={cast.profile_path}
+                                />
+                            ))}
+                        </ScrollContainer>
+                    </Section>
+
+                    <Section>
+                        <Subtitle>Crew</Subtitle>
+                        <ScrollContainer>
+                            {details.crew.map((crew: CrewMember) => (
+                                <CreditsCard
+                                    key={crew.name}
+                                    name={crew.name}
+                                    role={crew.job}
+                                    profilePath={crew.profile_path}
+                                />
+                            ))}
+                        </ScrollContainer>
+                    </Section>
+
+                    <Section>
+                        <Subtitle>Gallery</Subtitle>
+                        <ScrollContainer>
+                            {details.imagePaths.map((imagePath: string, index: number) => (
+                                <Image key={index} src={`https://image.tmdb.org/t/p/original/${imagePath}`} alt={`Movie scene ${index}`} />
+                            ))}
+                        </ScrollContainer>
+                    </Section>
+                </>
+            ) : (
+                <p>Loading...</p>
+            )}
         </DetailsContainer>
     );
 };
