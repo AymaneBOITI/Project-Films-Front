@@ -13,14 +13,17 @@ const Card = styled.div`
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   text-align: center;
-  padding: 16px;
+
   width: 150px;
   margin-bottom: 16px;
+  min-width: 200px;
+  
 `;
 
 const ProfileImage = styled.img`
   width: 100%;
-  height: 225px; // Adjust the height as needed
+  min-width: 200px;
+  min-height: 300px;
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 8px;

@@ -33,6 +33,19 @@ const ScrollContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
 `;
 
 const Image = styled.img`
