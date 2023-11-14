@@ -5,10 +5,13 @@ import MovieCard from './MovieCard';
 import { MovieSummary } from '../services/types'; // Make sure to import your actual type definitions
 
 const TabsContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  background: #333;
+  /*background: #333;*/
   padding: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-between;
+  margin: 2%;
 `;
 
 const Tab = styled.button<{ isActive: boolean }>`
@@ -25,11 +28,30 @@ const Tab = styled.button<{ isActive: boolean }>`
   }
 `;
 
+const Title = styled.h1`
+    padding: 0px;
+    margin: 0px;
+    font-size: 2rem;
+    @media (min-width: 640px) {
+      font-size: 2rem;
+    }
+  `;
+    const Input = styled.input`
+    padding-left: 1rem;
+    border-radius: 9999px;
+    min-width: 100%;
+    @media (min-width: 640px) {
+      min-width: 20rem;
+    }
+    background-color: none; 
+    border: none;
+  `;
+
 const MoviesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-  padding: 1rem;
+  padding: 2rem;
 `;
 
 interface MovieListProps {
@@ -65,6 +87,8 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     return (
         <>
             <TabsContainer>
+                <Title>🎬🍿 Movie library</Title>
+
                 {categories.map((category) => (
                     <Tab
                         key={category}
@@ -78,6 +102,7 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
                         {category.charAt(0).toUpperCase() + category.slice(1)}
                     </Tab>
                 ))}
+                <Input  type="text" placeholder="🔎 Search for movie" />
             </TabsContainer>
             <InfiniteScroll
                 dataLength={movies.length}

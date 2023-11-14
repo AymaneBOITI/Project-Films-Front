@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color:rgba(25,33,44,0.9); /*  #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,16 +25,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  /*display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
-}
-/* styles.css */
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
-  /* other styles for dark mode */
+  min-height: 100vh;*/
 }
 
 h1 {
