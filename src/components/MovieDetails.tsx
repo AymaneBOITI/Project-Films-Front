@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import { getMovieDetails } from '../services/apiService'; // Adjust the path as needed
+import {constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
+
 
 const DetailsContainer = styled.div`
   padding: 20px;
@@ -39,6 +40,40 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
+const GenreContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+`;
+
+const GenreTag = styled.span`
+  background-color: #efefef;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  color: #333;
+`;
+
+const TrailerContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+
+  padding-top: 56.25%;
+`;
+
+const TrailerIframe = styled.iframe`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  border: none;
+`;
+const formatDate = (dateString: string, language: string): string => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat(language, options).format(date);
+};
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
@@ -49,6 +84,7 @@ const MovieDetails = () => {
         }
     }, [id]);
 
+    const language = getBrowserLanguage();
     return (
         <DetailsContainer>
             {details ? (
@@ -56,17 +92,22 @@ const MovieDetails = () => {
                     <Section>
                         <Title>{details.original_title}</Title>
                         <Text>{details.overview}</Text>
-                        {/* Assuming you have a way to format runtime nicely */}
                         <Text>Runtime: {details.runtime} minutes</Text>
+                        <Text>Release Date: {formatDate(details.release_date, language)}</Text>
                         <Text>Rating: {details.vote_average}</Text>
+                        <GenreContainer>
+                            {details.genres.map(genre => (
+                                <GenreTag key={genre.id}>{genre.name}</GenreTag>
+                            ))}
+                        </GenreContainer>
                     </Section>
 
                     <Section>
                         <Subtitle>Cast</Subtitle>
                         <ScrollContainer>
-                            {details.cast.map((cast: CastMember) => (
+                            {details.cast.map((cast : CastMember, index: number) => (
                                 <CreditsCard
-                                    key={cast.name}
+                                    key={`${cast.name}-${cast.character}-${index}`}
                                     name={cast.name}
                                     role={cast.character}
                                     profilePath={cast.profile_path}
@@ -78,9 +119,9 @@ const MovieDetails = () => {
                     <Section>
                         <Subtitle>Crew</Subtitle>
                         <ScrollContainer>
-                            {details.crew.map((crew: CrewMember) => (
+                            {details.crew.map((crew:CrewMember, index:number) => (
                                 <CreditsCard
-                                    key={crew.name}
+                                    key={`${crew.name}-${crew.job}-${index}`}
                                     name={crew.name}
                                     role={crew.job}
                                     profilePath={crew.profile_path}
@@ -92,11 +133,26 @@ const MovieDetails = () => {
                     <Section>
                         <Subtitle>Gallery</Subtitle>
                         <ScrollContainer>
-                            {details.imagePaths.map((imagePath: string, index: number) => (
+                            {details.imagePaths.map((imagePath :string, index :number) => (
                                 <Image key={index} src={`https://image.tmdb.org/t/p/original/${imagePath}`} alt={`Movie scene ${index}`} />
                             ))}
                         </ScrollContainer>
                     </Section>
+                    {details.trailerKey && (
+                        <Section>
+                            <Subtitle>Trailer</Subtitle>
+                            <TrailerContainer>
+                                <TrailerIframe
+                                    src={constructYoutubeUrl(details.trailerKey)}
+                                    title="movie-trailer"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></TrailerIframe>
+                            </TrailerContainer>
+                        </Section>
+                    )}
+
                 </>
             ) : (
                 <p>Loading...</p>

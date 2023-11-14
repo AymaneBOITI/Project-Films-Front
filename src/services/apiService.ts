@@ -8,7 +8,7 @@ export const constructImageUrl = (path: string): string => {
 };
 
 export const constructYoutubeUrl = (key: string): string => {
-    return `https://www.youtube.com/watch?v=${key}`;
+    return `https://www.youtube.com/embed/${key}`;
 };
 
 export const getBrowserLanguage = (): string => {
