@@ -54,4 +54,5 @@ export interface MovieDetails {
     runtime: number;
     trailerKey?: string;
     vote_average: number;
+    status: number;
 }

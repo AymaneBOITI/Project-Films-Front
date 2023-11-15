@@ -2,30 +2,20 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from '@emotion/styled';
 
 const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #2c2c2c;
-  border-radius: 20px;
-  padding: 5px 10px;
-  margin: 10px;
-`;
-
-const SearchInput = styled.input`
-  flex: 1;
-  border: none;
-  background-color: transparent;
-  padding: 10px;
-  color: white;
-  font-size: 16px;
-  outline: none;
-  &::placeholder {
-    color: #ccc;
+  @media screen and (max-width: 1150px) {
+    min-width: 100%;
   }
 `;
 
-const Icon = styled.i`
-  color: white;
-  padding: 0 10px;
+const SearchInput = styled.input`
+  padding-left: 20px;
+  adding-left: 1rem;
+  border-radius: 9999px;
+  @media screen and (max-width: 1150px) {
+    min-width: 100%;
+  }
+  height: 35px;
+  border: none;
 `;
 
 interface SearchBarProps {
@@ -42,7 +32,6 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
 
     useEffect(() => {
         const handler = setTimeout(delayedQuery, 2000);
-
         return () => {
             clearTimeout(handler);
         };
@@ -51,14 +40,14 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
         setPage(1); // Reset page number on new search
+        console.log("test");
     };
 
     return (
         <SearchContainer>
-            <Icon className="material-icons">search</Icon>
             <SearchInput
                 type="text"
-                placeholder="Search for movie"
+                placeholder="🔎 Search for movie"
                 value={query}
                 onChange={handleChange}
             />

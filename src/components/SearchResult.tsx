@@ -1,16 +1,14 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { MovieSummary } from '../services/types';
-
+import {MovieDetails} from '../services/types';
 
 interface MovieCardProps {
-    movie: MovieSummary;
+    movie: MovieDetails;
 }
 
 const Card = styled.div`
   display: grid;
-  width: 100%;
-  max-width: 200px;
+  width: 20%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
@@ -44,7 +42,7 @@ const Rating = styled.div`
   margin-top: 8px;
 `;
 
-const MovieCard = ({ movie }: MovieCardProps) => {
+const SearchResult = ({ movie }: MovieCardProps) => {
     const navigate = useNavigate();
 
     const handleMovieClick = () => {
@@ -53,13 +51,13 @@ const MovieCard = ({ movie }: MovieCardProps) => {
 
     return (
         <Card onClick={handleMovieClick}>
-            <Poster src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`} alt={movie.title} />
+            <Poster src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.original_title} />
             <Info>
-                <Title>{movie.title}</Title>
-                <Rating>{`Rating: ${movie.voteAverage}/10`}</Rating>
+                <Title>{movie.original_title}</Title>
+                <Rating>{`Rating: ${movie.vote_average}/10`}</Rating>
             </Info>
         </Card>
     );
 };
 
-export default MovieCard;
+export default SearchResult;

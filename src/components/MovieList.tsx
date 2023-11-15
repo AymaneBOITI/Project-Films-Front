@@ -2,8 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from '@emotion/styled';
 import MovieCard from './MovieCard';
-import { MovieSummary } from '../services/types'; // Make sure to import your actual type definitions
+import {MovieDetails, MovieSummary} from '../services/types';
+import SearchResult from "./SearchResult.tsx"; // Make sure to import your actual type definitions
 
+const SearchResultContainer = styled.div `
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
 const TabsContainer = styled.div`
   /*background: #333;*/
   padding: 10px 0;
@@ -24,7 +30,6 @@ const Tab = styled.button<{ isActive: boolean }>`
   margin: 0 5px;
   cursor: pointer;
   background: ${({ isActive }) => (isActive ? '#555' : 'transparent')};
-  border: none;
   color: ${({ isActive }) => (isActive ? 'white' : '#aaa')};
   border-bottom: ${({ isActive }) => (isActive ? '2px solid white' : 'none')};
 
@@ -45,21 +50,22 @@ const Title = styled.h1`
       font-size: 2rem;
     }
   `;
-    const Input = styled.input`
-    padding-left: 1rem;
-    border-radius: 9999px;
-    @media screen and (max-width: 1150px) {
-      min-width: 100%;
-    } 
-    height: 35px;
-    border: none;
-  `;
 
 const MoviesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   padding: 2rem;
+`;
+
+const SearchInput = styled.input`
+  padding-left: 20px;
+  border-radius: 9999px;
+  @media screen and (max-width: 1150px) {
+    min-width: 100%;
+  }
+  height: 35px;
+  border: none;
 `;
 
 interface MovieListProps {
@@ -73,6 +79,8 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     const [movies, setMovies] = useState<MovieSummary[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [id, setId] = useState('');
+    const [data, setData] = useState<MovieDetails>();
 
     const loadMovies = useCallback(async () => {
         const newMovies = await fetchMoviesByCategory(activeCategory, page);
@@ -81,7 +89,7 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     }, [activeCategory, page, fetchMoviesByCategory]);
 
     useEffect(() => {
-        loadMovies();
+        loadMovies().then(() => {});
     }, [activeCategory, loadMovies]);
 
     const loadMoreMovies = () => {
@@ -89,8 +97,25 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     };
 
     useEffect(() => {
-        loadMovies();
+        loadMovies().then(() => {});
     }, [page]);
+
+   useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/movies/details/${id}`);
+                const result = await response.json();
+                setData(result);
+            } catch (error) {
+                /*setData(null);*/
+            }
+        };
+        fetchData().then(() => {});
+    }, [id]); // Le useEffect s'exécute chaque fois que l'ID change
+
+    const handleIdChange = (event: any) => {
+        setId(event.target.value);
+    };
 
     return (
         <>
@@ -102,6 +127,7 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
                         key={category}
                         isActive={activeCategory === category}
                         onClick={() => {
+                            setId("");
                             setPage(1);
                             setMovies([]);
                             setActiveCategory(category);
@@ -110,21 +136,41 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
                         {category.charAt(0).toUpperCase() + category.slice(1)}
                     </Tab>
                 ))}
-                <Input  type="text" placeholder="🔎 Search for movie" />
+                <SearchInput type="text"
+                       placeholder="🔎 Search for movie"
+                       value={id}
+                       onChange={handleIdChange}/>
             </TabsContainer>
-            <InfiniteScroll
-                dataLength={movies.length}
-                next={loadMoreMovies}
-                hasMore={hasMore}
-                loader={<h4>Loading more movies...</h4>}
-                endMessage={<p>No more movies to show</p>}
-            >
-                <MoviesGrid>
-                    {movies.map((movie) => (
-                        <MovieCard key={movie.id} movie={movie} />
-                    ))}
-                </MoviesGrid>
-            </InfiniteScroll>
+
+            {id == "" ? (
+                <InfiniteScroll
+                    dataLength={movies.length}
+                    next={loadMoreMovies}
+                    hasMore={hasMore}
+                    loader={<h4>Loading more movies...</h4>}
+                    endMessage={<p>No more movies to show</p>}
+                >
+                    <MoviesGrid>
+                        {movies.map((movie) => (
+                            <MovieCard key={movie.id} movie={movie} />
+                        ))}
+                    </MoviesGrid>
+                </InfiniteScroll>
+                ) : (
+                    <>
+                {data && data.status != 500 ? (
+                    <SearchResultContainer>
+                        <SearchResult key={id} movie={data} />
+                    </SearchResultContainer>
+
+                ) : (
+                    <SearchResultContainer>
+                        <p>No Movie with this id !</p>
+                    </SearchResultContainer>
+                )}
+
+                    </>
+            )}
         </>
     );
 };
