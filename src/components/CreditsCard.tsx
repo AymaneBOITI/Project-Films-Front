@@ -8,11 +8,10 @@ interface CreditsCardProps {
 }
 
 const Card = styled.div`
-  background: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  text-align: center;
+  text-align: left;
 
   width: 150px;
   margin-bottom: 16px;
@@ -32,12 +31,14 @@ const ProfileImage = styled.img`
 const Name = styled.h3`
   margin: 0;
   font-size: 1rem;
-  color: #333;
+  color: rgba(255,255,255,0.9);
 `;
 
 const Role = styled.p`
+  margin: 0px;
   font-size: 0.875rem;
-  color: #666;
+  color: rgba(255,255,255,0.7);
+  
 `;
 
 const defaultProfileImage = unknown;

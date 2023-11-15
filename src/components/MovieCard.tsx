@@ -15,10 +15,10 @@ const Card = styled.div`
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-  hover:{
-  transform: scale(1.1);
-};
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  };
 `;
 
 const Poster = styled.img`

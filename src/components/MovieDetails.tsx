@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import {constructYoutubeUrl, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
+import {constructImageUrl, constructYoutubeUrl, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
 import DetailHeader from "./DetailHeader.tsx";
@@ -9,6 +9,12 @@ import DetailHeader from "./DetailHeader.tsx";
 
 const DetailsContainer = styled.div`
   padding: 20px;
+  /*background-image: constructImageUrl(details.backdrop_path);
+  background-size: cover ;
+  background-position: center;
+  filter: blur(8px);
+  position: fixed;
+  z-index: -1;*/
 `;
 
 const Section = styled.section`
@@ -17,7 +23,10 @@ const Section = styled.section`
 
 const Subtitle = styled.h3`
   margin: 0;
-  color: #666;
+  color: white;
+  font-size: 32px;
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+
 `;
 
 const ScrollContainer = styled.div`
@@ -27,16 +36,17 @@ const ScrollContainer = styled.div`
   margin-top: 10px;
   white-space: nowrap;
   &::-webkit-scrollbar {
-    height: 10px;
+    height: 5px;
   }
 
   &::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 5px;
+    width: 20%;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: none;
   }
 `;
 
@@ -46,19 +56,20 @@ const Image = styled.img`
 `;
 
 const TrailerContainer = styled.div`
-  position: relative;
+  display: grid;
+  justify-content: center;
   overflow: hidden;
-
-  padding-top: 56.25%;
+  width: 100%;
+  background: none;
+  
 `;
 
 const TrailerIframe = styled.iframe`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
   border: none;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 10px;
+  
 `;
 
 const MovieDetails = () => {
@@ -72,10 +83,10 @@ const MovieDetails = () => {
     }, [id]);
 
     return (
-        <DetailsContainer>
+        <DetailsContainer >
             {details ? (
                 <>
-                     <DetailHeader details={details} />
+                    <DetailHeader details={details} />
                     <Section>
                         <Subtitle>Cast</Subtitle>
                         <ScrollContainer>
