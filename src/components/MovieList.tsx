@@ -12,6 +12,11 @@ const TabsContainer = styled.div`
   gap: 2rem;
   justify-content: space-between;
   margin: 2%;
+
+  @media screen and (max-width: 950px) {
+    display: grid;
+    justify-content: center;
+  }
 `;
 
 const Tab = styled.button<{ isActive: boolean }>`
@@ -26,6 +31,10 @@ const Tab = styled.button<{ isActive: boolean }>`
   &:hover {
     color: white;
   }
+
+  @media screen and (max-width: 950px) {
+      display: none;
+  }
 `;
 
 const Title = styled.h1`
@@ -39,11 +48,10 @@ const Title = styled.h1`
     const Input = styled.input`
     padding-left: 1rem;
     border-radius: 9999px;
-    min-width: 100%;
-    @media (min-width: 640px) {
-      min-width: 20rem;
-    }
-    background-color: none; 
+    @media screen and (max-width: 1150px) {
+      min-width: 100%;
+    } 
+    height: 35px;
     border: none;
   `;
 

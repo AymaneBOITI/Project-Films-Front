@@ -39,8 +39,8 @@ const GenreTag = styled.span`
 
 const Image = styled.img`
   width: 20%;
- padding: 1%;
-  border-radius: 50px;
+  padding: 1%;
+  border-radius: 30px;
   
 `;
 const formatDate = (dateString: string, language: string): string => {

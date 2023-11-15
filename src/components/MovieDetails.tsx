@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import {constructImageUrl, constructYoutubeUrl, getMovieDetails} from '../services/apiService';
+import { constructYoutubeUrl, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
 import DetailHeader from "./DetailHeader.tsx";
@@ -9,12 +9,6 @@ import DetailHeader from "./DetailHeader.tsx";
 
 const DetailsContainer = styled.div`
   padding: 20px;
-  /*background-image: constructImageUrl(details.backdrop_path);
-  background-size: cover ;
-  background-position: center;
-  filter: blur(8px);
-  position: fixed;
-  z-index: -1;*/
 `;
 
 const Section = styled.section`
