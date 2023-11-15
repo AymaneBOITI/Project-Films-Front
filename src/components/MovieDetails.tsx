@@ -1,9 +1,10 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import {constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
+import { constructYoutubeUrl, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
+import DetailHeader from "./DetailHeader.tsx";
 
 
 const DetailsContainer = styled.div`
@@ -14,18 +15,12 @@ const Section = styled.section`
   margin-bottom: 20px;
 `;
 
-const Title = styled.h2`
-  margin: 0;
-  color: #333;
-`;
-
 const Subtitle = styled.h3`
   margin: 0;
-  color: #666;
-`;
+  color: white;
+  font-size: 32px;
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
 
-const Text = styled.p`
-  color: #333;
 `;
 
 const ScrollContainer = styled.div`
@@ -35,16 +30,17 @@ const ScrollContainer = styled.div`
   margin-top: 10px;
   white-space: nowrap;
   &::-webkit-scrollbar {
-    height: 10px;
+    height: 5px;
   }
 
   &::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 5px;
+    width: 20%;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: none;
   }
 `;
 
@@ -53,40 +49,23 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const GenreContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-`;
-
-const GenreTag = styled.span`
-  background-color: #efefef;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  color: #333;
-`;
-
 const TrailerContainer = styled.div`
-  position: relative;
+  display: grid;
+  justify-content: center;
   overflow: hidden;
-
-  padding-top: 56.25%;
+  width: 100%;
+  background: none;
+  
 `;
 
 const TrailerIframe = styled.iframe`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
   border: none;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 10px;
+  
 `;
-const formatDate = (dateString: string, language: string): string => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat(language, options).format(date);
-};
+
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
@@ -97,24 +76,11 @@ const MovieDetails = () => {
         }
     }, [id]);
 
-    const language = getBrowserLanguage();
     return (
-        <DetailsContainer>
+        <DetailsContainer >
             {details ? (
                 <>
-                    <Section>
-                        <Title>{details.original_title}</Title>
-                        <Text>{details.overview}</Text>
-                        <Text>Runtime: {details.runtime} minutes</Text>
-                        <Text>Release Date: {formatDate(details.release_date, language)}</Text>
-                        <Text>Rating: {details.vote_average}</Text>
-                        <GenreContainer>
-                            {details.genres.map(genre => (
-                                <GenreTag key={genre.id}>{genre.name}</GenreTag>
-                            ))}
-                        </GenreContainer>
-                    </Section>
-
+                    <DetailHeader details={details} />
                     <Section>
                         <Subtitle>Cast</Subtitle>
                         <ScrollContainer>
