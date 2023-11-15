@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import {constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
+import MovieCard from "./MovieCard.tsx";
 
 
 const DetailsContainer = styled.div`
@@ -103,16 +104,19 @@ const MovieDetails = () => {
             {details ? (
                 <>
                     <Section>
-                        <Title>{details.original_title}</Title>
-                        <Text>{details.overview}</Text>
-                        <Text>Runtime: {details.runtime} minutes</Text>
-                        <Text>Release Date: {formatDate(details.release_date, language)}</Text>
-                        <Text>Rating: {details.vote_average}</Text>
-                        <GenreContainer>
-                            {details.genres.map(genre => (
-                                <GenreTag key={genre.id}>{genre.name}</GenreTag>
-                            ))}
-                        </GenreContainer>
+                        <img alt={details.cast[0].name} src={`https://image.tmdb.org/t/p/w500${details.cast[0].profile_path}`} />
+                        <Section>
+                            <Title>{details.original_title}</Title>
+                            <Text>{details.overview}</Text>
+                            <Text>Runtime: {details.runtime} minutes</Text>
+                            <Text>Release Date: {formatDate(details.release_date, language)}</Text>
+                            <Text>Rating: {details.vote_average}</Text>
+                            <GenreContainer>
+                                {details.genres.map(genre => (
+                                    <GenreTag key={genre.id}>{genre.name}</GenreTag>
+                                ))}
+                            </GenreContainer>
+                        </Section>
                     </Section>
 
                     <Section>
