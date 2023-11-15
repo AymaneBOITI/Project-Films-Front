@@ -40,7 +40,7 @@ export interface CrewMember {
 }
 
 export interface MovieDetails {
-    backdrop_path?: string;
+    backdrop_path: string;
     cast: CastMember[];
     crew: CrewMember[];
     genres: Genre[];

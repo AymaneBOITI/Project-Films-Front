@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import unknown from '../assets/unknown.png';
+import {constructImageUrl} from "../services/apiService.ts";
 
 interface CreditsCardProps {
     name: string;
@@ -45,7 +46,7 @@ const defaultProfileImage = unknown;
 
 export const CreditsCard = ({ name, role, profilePath }: CreditsCardProps) => {
     const imageUrl = profilePath
-        ? `https://image.tmdb.org/t/p/original${profilePath}`
+        ? constructImageUrl(profilePath)
         : defaultProfileImage;
 
     return (

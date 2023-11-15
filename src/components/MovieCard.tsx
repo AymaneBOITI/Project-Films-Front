@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { MovieSummary } from '../services/types';
+import {constructImageUrl} from "../services/apiService.ts";
 
 
 interface MovieCardProps {
@@ -52,7 +53,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
 
     return (
         <Card onClick={handleMovieClick}>
-            <Poster src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`} alt={movie.title} />
+            <Poster src={constructImageUrl(movie.posterPath)} alt={movie.title} />
             <Info>
                 <Title>{movie.title}</Title>
                 <Rating>{`Rating: ${movie.voteAverage}/10`}</Rating>
