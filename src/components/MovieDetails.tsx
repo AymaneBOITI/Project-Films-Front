@@ -24,7 +24,7 @@ const BackgroundImage = styled.div<BackgroundImageProps>`
   background-image: url(${props => props.url});
   background-size: cover;
   background-position: center;
-  filter: blur(8px);
+  filter: blur(40px);
   z-index: -1;
 `;
 
