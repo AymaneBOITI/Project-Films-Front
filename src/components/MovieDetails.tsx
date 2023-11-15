@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import styled from '@emotion/styled';
-import { useParams } from 'react-router-dom';
-import { constructYoutubeUrl, getMovieDetails} from '../services/apiService';
+import {useParams} from 'react-router-dom';
+import {constructYoutubeUrl, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
-import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
+import {MovieDetails as MovieDetailsType, CastMember, CrewMember} from '../services/types';
 import DetailHeader from "./DetailHeader.tsx";
 
 
@@ -19,7 +19,7 @@ const Subtitle = styled.h3`
   margin: 0;
   color: white;
   font-size: 32px;
-  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
 
 `;
 
@@ -29,6 +29,7 @@ const ScrollContainer = styled.div`
   gap: 10px;
   margin-top: 10px;
   white-space: nowrap;
+
   &::-webkit-scrollbar {
     height: 5px;
   }
@@ -49,13 +50,30 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
+const Link = styled.a`
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateX(-2px);
+  }
+
+  svg {
+    margin-right: 8px;
+  }
+`;
+
+
 const TrailerContainer = styled.div`
   display: grid;
   justify-content: center;
   overflow: hidden;
   width: 100%;
   background: none;
-  
+
 `;
 
 const TrailerIframe = styled.iframe`
@@ -63,11 +81,11 @@ const TrailerIframe = styled.iframe`
   width: 80vw;
   height: 80vh;
   border-radius: 10px;
-  
+
 `;
 
 const MovieDetails = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
 
     useEffect(() => {
@@ -77,61 +95,72 @@ const MovieDetails = () => {
     }, [id]);
 
     return (
-        <DetailsContainer >
+        <DetailsContainer>
             {details ? (
                 <>
-                    <DetailHeader details={details} />
-                    <Section>
-                        <Subtitle>Cast</Subtitle>
-                        <ScrollContainer>
-                            {details.cast.map((cast : CastMember, index: number) => (
-                                <CreditsCard
-                                    key={`${cast.name}-${cast.character}-${index}`}
-                                    name={cast.name}
-                                    role={cast.character}
-                                    profilePath={cast.profile_path}
-                                />
-                            ))}
-                        </ScrollContainer>
-                    </Section>
-
-                    <Section>
-                        <Subtitle>Crew</Subtitle>
-                        <ScrollContainer>
-                            {details.crew.map((crew:CrewMember, index:number) => (
-                                <CreditsCard
-                                    key={`${crew.name}-${crew.job}-${index}`}
-                                    name={crew.name}
-                                    role={crew.job}
-                                    profilePath={crew.profile_path}
-                                />
-                            ))}
-                        </ScrollContainer>
-                    </Section>
-
-                    <Section>
-                        <Subtitle>Gallery</Subtitle>
-                        <ScrollContainer>
-                            {details.imagePaths.map((imagePath :string, index :number) => (
-                                <Image key={index} src={`https://image.tmdb.org/t/p/original/${imagePath}`} alt={`Movie scene ${index}`} />
-                            ))}
-                        </ScrollContainer>
-                    </Section>
-                    {details.trailerKey && (
+                    <Link href="../">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back
+                    </Link>
+                    <>
+                        <DetailHeader details={details}/>
                         <Section>
-                            <Subtitle>Trailer</Subtitle>
-                            <TrailerContainer>
-                                <TrailerIframe
-                                    src={constructYoutubeUrl(details.trailerKey)}
-                                    title="movie-trailer"
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                ></TrailerIframe>
-                            </TrailerContainer>
+                            <Subtitle>Cast</Subtitle>
+                            <ScrollContainer>
+                                {details.cast.map((cast: CastMember, index: number) => (
+                                    <CreditsCard
+                                        key={`${cast.name}-${cast.character}-${index}`}
+                                        name={cast.name}
+                                        role={cast.character}
+                                        profilePath={cast.profile_path}
+                                    />
+                                ))}
+                            </ScrollContainer>
                         </Section>
-                    )}
 
+                        <Section>
+                            <Subtitle>Crew</Subtitle>
+                            <ScrollContainer>
+                                {details.crew.map((crew: CrewMember, index: number) => (
+                                    <CreditsCard
+                                        key={`${crew.name}-${crew.job}-${index}`}
+                                        name={crew.name}
+                                        role={crew.job}
+                                        profilePath={crew.profile_path}
+                                    />
+                                ))}
+                            </ScrollContainer>
+                        </Section>
+
+                        <Section>
+                            <Subtitle>Gallery</Subtitle>
+                            <ScrollContainer>
+                                {details.imagePaths.map((imagePath: string, index: number) => (
+                                    <Image key={index} src={`https://image.tmdb.org/t/p/original/${imagePath}`}
+                                           alt={`Movie scene ${index}`}/>
+                                ))}
+                            </ScrollContainer>
+                        </Section>
+                        {details.trailerKey && (
+                            <Section>
+                                <Subtitle>Trailer</Subtitle>
+                                <TrailerContainer>
+                                    <TrailerIframe
+                                        src={constructYoutubeUrl(details.trailerKey)}
+                                        title="movie-trailer"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></TrailerIframe>
+                                </TrailerContainer>
+                            </Section>
+                        )}
+
+                    </>
                 </>
             ) : (
                 <p>Loading...</p>
