@@ -4,38 +4,54 @@ import { getBrowserLanguage } from '../services/apiService';
 import { MovieDetails as MovieDetailsType } from '../services/types';
 
 const Section = styled.section`
-  margin-bottom: 20px;
+  padding: 1%;
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  
 `;
 
 const Title = styled.h2`
-  margin: 0;
-  color: #333;
+  margin: 0px;
 `;
 
 const Text = styled.p`
-  color: #333;
+  margin: 0px;
 `;
 
 const GenreContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 2%;
+  margin-top: 2%;
 `;
 
 const GenreTag = styled.span`
-  background-color: #efefef;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  color: #333;
+  background-color: #323744!important;;
+  padding: 1% 2%;
+  
+  border-radius: 10px;
+  
+  color: White;
 `;
 
+const Image = styled.img`
+  width: 20%;
+ padding: 1%;
+  border-radius: 50px;
+  
+`;
 const formatDate = (dateString: string, language: string): string => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
     const date = new Date(dateString);
     return new Intl.DateTimeFormat(language, options).format(date);
 };
 
+const DetailHeaderContainer = styled.div`
+    display: flex;
+`;
 const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
     const language = getBrowserLanguage();
 
@@ -47,8 +63,8 @@ const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
     const posterSrc = poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : '';
 
     return (
-        <>
-            <img alt={crewName} src={posterSrc} />
+        <DetailHeaderContainer>
+            <Image alt={crewName} src={posterSrc} />
             <Section>
                 <Title>{original_title}</Title>
                 <Text>{overview}</Text>
@@ -61,7 +77,7 @@ const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
                     ))}
                 </GenreContainer>
             </Section>
-        </>
+        </DetailHeaderContainer>
     );
 };
 
