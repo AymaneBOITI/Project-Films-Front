@@ -42,18 +42,21 @@ const RatingCircle = styled.svg`
   position: absolute;
   bottom: 10px;
   right: 10px;
-  opacity: 0;
   transform: rotate(-90deg);
+  opacity: 0;
   transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+  }
 `;
 
 const RatingText = styled.text`
   transform: rotate(90deg);
   transform-origin: center;
-  fill: white;
+  fill: white; 
   font-size: 12px;
+  font-weight: bold; 
 `;
-
 const MovieCard = ({ movie }: MovieCardProps) => {
     const navigate = useNavigate();
     const rating = movie.voteAverage * 10; // Assuming voteAverage is between 0 and 10
@@ -69,6 +72,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             <Poster src={constructImageUrl(movie.posterPath)} alt={movie.title} />
             <Title>{movie.title}</Title>
             <RatingCircle width="42" height="42">
+                <circle className="background" cx="21" cy="21" r="15.9155" fill="rgb(24, 31, 41)" />
                 <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#204529" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset="100" />
                 <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#21d07a" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} />
                 <RatingText x="50%" y="50%" dy=".3em" textAnchor="middle">
