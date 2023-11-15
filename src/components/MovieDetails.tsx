@@ -1,10 +1,10 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
-import {constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
+import {constructYoutubeUrl, getMovieDetails} from '../services/apiService'; // Adjust the path as needed
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
-import MovieCard from "./MovieCard.tsx";
+import DetailHeader from "./DetailHeader.tsx";
 
 
 const DetailsContainer = styled.div`
@@ -15,18 +15,9 @@ const Section = styled.section`
   margin-bottom: 20px;
 `;
 
-const Title = styled.h2`
-  margin: 0;
-  color: #333;
-`;
-
 const Subtitle = styled.h3`
   margin: 0;
   color: #666;
-`;
-
-const Text = styled.p`
-  color: #333;
 `;
 
 const ScrollContainer = styled.div`
@@ -54,20 +45,6 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const GenreContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-`;
-
-const GenreTag = styled.span`
-  background-color: #efefef;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  color: #333;
-`;
-
 const TrailerContainer = styled.div`
   position: relative;
   overflow: hidden;
@@ -83,11 +60,7 @@ const TrailerIframe = styled.iframe`
   width: 100vw;
   border: none;
 `;
-const formatDate = (dateString: string, language: string): string => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat(language, options).format(date);
-};
+
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
@@ -98,27 +71,11 @@ const MovieDetails = () => {
         }
     }, [id]);
 
-    const language = getBrowserLanguage();
     return (
         <DetailsContainer>
             {details ? (
                 <>
-                    <Section>
-                        <img alt={details.cast[0].name} src={`https://image.tmdb.org/t/p/w500${details.cast[0].profile_path}`} />
-                        <Section>
-                            <Title>{details.original_title}</Title>
-                            <Text>{details.overview}</Text>
-                            <Text>Runtime: {details.runtime} minutes</Text>
-                            <Text>Release Date: {formatDate(details.release_date, language)}</Text>
-                            <Text>Rating: {details.vote_average}</Text>
-                            <GenreContainer>
-                                {details.genres.map(genre => (
-                                    <GenreTag key={genre.id}>{genre.name}</GenreTag>
-                                ))}
-                            </GenreContainer>
-                        </Section>
-                    </Section>
-
+                     <DetailHeader details={details} />
                     <Section>
                         <Subtitle>Cast</Subtitle>
                         <ScrollContainer>
