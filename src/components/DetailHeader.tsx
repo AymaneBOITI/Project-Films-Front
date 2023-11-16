@@ -20,10 +20,12 @@ const Title = styled.h2`
 
 const Text = styled.p`
   margin: 0px;
+  text-align: justify;
 `;
 
 const Image = styled.img`
   width: 20%;
+  min-width: 300px;
   padding: 1%;
   border-radius: 30px;
   
@@ -37,6 +39,10 @@ const formatDate = (dateString: string, language: string): string => {
 
 const DetailHeaderContainer = styled.div`
     display: flex;
+  @media screen and (max-width: 950px) {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 `;
 const TitleContainer = styled.div`
   display: flex;
