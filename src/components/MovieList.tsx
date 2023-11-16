@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from '@emotion/styled';
 import MovieCard from './MovieCard';
-import { MovieSummary } from '../services/types'; // Make sure to import your actual type definitions
+import { MovieSummary } from '../services/types';
+import {searchMovies} from "../services/apiService.ts";
+import SearchBar from "./SearchBar.tsx"; // Make sure to import your actual type definitions
 
 const TabsContainer = styled.div`
   /*background: #333;*/
@@ -45,15 +47,7 @@ const Title = styled.h1`
       font-size: 2rem;
     }
   `;
-    const Input = styled.input`
-    padding-left: 1rem;
-    border-radius: 9999px;
-    @media screen and (max-width: 1150px) {
-      min-width: 100%;
-    } 
-    height: 35px;
-    border: none;
-  `;
+
 
 const MoviesGrid = styled.div`
   display: grid;
@@ -73,6 +67,8 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     const [movies, setMovies] = useState<MovieSummary[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const fullCategories = [...categories, 'search'];
 
     const loadMovies = useCallback(async () => {
         const newMovies = await fetchMoviesByCategory(activeCategory, page);
@@ -80,37 +76,60 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
         setMovies((prevMovies) => [...prevMovies, ...newMovies]);
     }, [activeCategory, page, fetchMoviesByCategory]);
 
-    useEffect(() => {
-        loadMovies();
-    }, [activeCategory, loadMovies]);
-
     const loadMoreMovies = () => {
         setPage((prevPage) => prevPage + 1);
     };
 
     useEffect(() => {
-        loadMovies();
-    }, [page]);
+        if (activeCategory !== 'search') {
+            loadMovies();
+        }
+    }, [activeCategory, loadMovies]);
+
+    // This effect is responsible for loading more movies when the page changes
+    useEffect(() => {
+        if (activeCategory === 'search' && searchQuery) {
+            loadMovies();
+        }
+    }, [page, activeCategory, searchQuery, loadMovies]);
+
+    const handleSearch = useCallback(async (query: string) => {
+        if (query !== searchQuery) {
+            setSearchQuery(query);
+            if (query.trim()) {
+                setActiveCategory('search');
+                setPage(1);
+                setMovies([]);
+                const searchResults = await searchMovies(query, 1);
+                setMovies(searchResults);
+            }
+        }
+    }, [searchQuery]);
+    const handleTabClick = (category: string) => {
+        if (category === 'search' && searchQuery) {
+            // If search tab is clicked and there's a query, we don't want to reload movies
+            return;
+        }
+        setPage(1);
+        setMovies([]);
+        setActiveCategory(category);
+    };
+
 
     return (
         <>
             <TabsContainer>
                 <Title>🎬🍿 Movie library</Title>
-
-                {categories.map((category) => (
+                {fullCategories.map((category) => (
                     <Tab
                         key={category}
                         isActive={activeCategory === category}
-                        onClick={() => {
-                            setPage(1);
-                            setMovies([]);
-                            setActiveCategory(category);
-                        }}
+                        onClick={() => handleTabClick(category)}
                     >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                        {category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')}
                     </Tab>
                 ))}
-                <Input  type="text" placeholder="🔎 Search for movie" />
+                <SearchBar onSearch={handleSearch} />
             </TabsContainer>
             <InfiniteScroll
                 dataLength={movies.length}
