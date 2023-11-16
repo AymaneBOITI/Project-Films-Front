@@ -7,6 +7,7 @@ import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../ser
 import DetailHeader from "./DetailHeader.tsx";
 
 
+
 const DetailsContainer = styled.div`
   padding: 20px;
   backdrop-filter: blur(40px);
@@ -128,40 +129,46 @@ const MovieDetails = () => {
         <DetailsContainer>
             {details && (
                 <>
-                    <BackgroundImage url={constructImageUrl(details.backdrop_path)} />
+                    {details.backdrop_path && (
+                        <BackgroundImage url={constructImageUrl(details.backdrop_path)} />
+                    )}
                     <BackButton onClick={goBack}>
                         <BackIcon /> {backButtonLabel}
                     </BackButton>
                     <DetailHeader details={details} />
-                    <Section>
-                        <Subtitle>Credits</Subtitle>
-                        <ScrollContainer>
-                            {details.cast.map((cast: CastMember, index: number) => (
-                                <CreditsCard
-                                    key={`cast-${cast.name}-${index}`}
-                                    name={cast.name}
-                                    role={cast.character}
-                                    profilePath={cast.profile_path}
-                                />
-                            ))}
-                            {details.crew.map((crew: CrewMember, index: number) => (
-                                <CreditsCard
-                                    key={`crew-${crew.name}-${index}`}
-                                    name={crew.name}
-                                    role={crew.job}
-                                    profilePath={crew.profile_path}
-                                />
-                            ))}
-                        </ScrollContainer>
-                    </Section>
-                    <Section>
-                        <Subtitle>Gallery</Subtitle>
-                        <ScrollContainer>
-                            {details.imagePaths.map((imagePath :string, index :number) => (
-                                <Image key={index} src={`https://image.tmdb.org/t/p/original/${imagePath}`} alt={`Movie scene ${index}`} />
-                            ))}
-                        </ScrollContainer>
-                    </Section>
+                    {(details.cast.length > 0 || details.crew.length > 0) && (
+                        <Section>
+                            <Subtitle>Credits</Subtitle>
+                            <ScrollContainer>
+                                {details.cast.slice(0, 10).map((cast: CastMember, index: number) => (
+                                    <CreditsCard
+                                        key={`cast-${cast.name}-${index}`}
+                                        name={cast.name}
+                                        role={cast.character}
+                                        profilePath={cast.profile_path}
+                                    />
+                                ))}
+                                {details.crew.slice(0, 3).map((crew: CrewMember, index: number) => (
+                                    <CreditsCard
+                                        key={`crew-${crew.name}-${index}`}
+                                        name={crew.name}
+                                        role={crew.job}
+                                        profilePath={crew.profile_path}
+                                    />
+                                ))}
+                            </ScrollContainer>
+                        </Section>
+                    )}
+                    {details.imagePaths && details.imagePaths.length > 0 && (
+                        <Section>
+                            <Subtitle>Gallery</Subtitle>
+                            <ScrollContainer>
+                                {details.imagePaths.map((imagePath: string, index: number) => (
+                                    <Image key={index} src={constructImageUrl(imagePath)} alt={`Movie scene ${index}`} />
+                                ))}
+                            </ScrollContainer>
+                        </Section>
+                    )}
                     {details.trailerKey && (
                         <Section>
                             <Subtitle>Trailer</Subtitle>
@@ -176,7 +183,6 @@ const MovieDetails = () => {
                             </TrailerContainer>
                         </Section>
                     )}
-
                 </>
             )}
         </DetailsContainer>
