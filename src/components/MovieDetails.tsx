@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { useParams } from 'react-router-dom';
-import { constructYoutubeUrl, getMovieDetails} from '../services/apiService';
+import {useNavigate, useParams} from 'react-router-dom';
+import {constructImageUrl, constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
 import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
 import DetailHeader from "./DetailHeader.tsx";
@@ -9,6 +9,23 @@ import DetailHeader from "./DetailHeader.tsx";
 
 const DetailsContainer = styled.div`
   padding: 20px;
+  backdrop-filter: blur(40px);
+`;
+
+interface BackgroundImageProps {
+    url: string;
+}
+const BackgroundImage = styled.div<BackgroundImageProps>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(${props => props.url});
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px);
+  z-index: -1;
 `;
 
 const Section = styled.section`
@@ -45,8 +62,13 @@ const ScrollContainer = styled.div`
 `;
 
 const Image = styled.img`
-  max-height: 300px;
+  max-width: 100%;
+  width: 1200px;
+  vertical-align: middle;
+  height: auto;
+  display: block;
   object-fit: cover;
+  border-radius: .375rem;
 `;
 
 const TrailerContainer = styled.div`
@@ -65,10 +87,33 @@ const TrailerIframe = styled.iframe`
   border-radius: 10px;
   
 `;
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease; 
+  &:hover {
+    transform: translateX(-10px); 
+  }
+  `;
+
+const BackIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+);
 
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
+    const navigate = useNavigate();
+    const language = getBrowserLanguage();
 
     useEffect(() => {
         if (id) {
@@ -76,31 +121,32 @@ const MovieDetails = () => {
         }
     }, [id]);
 
+    const goBack = () => navigate(-1);
+    const backButtonLabel = language.startsWith('fr') ? 'Retour' : 'Back';
+
     return (
-        <DetailsContainer >
-            {details ? (
+        <DetailsContainer>
+            {details && (
                 <>
+                    <BackgroundImage url={constructImageUrl(details.backdrop_path)} />
+                    <BackButton onClick={goBack}>
+                        <BackIcon /> {backButtonLabel}
+                    </BackButton>
                     <DetailHeader details={details} />
                     <Section>
-                        <Subtitle>Cast</Subtitle>
+                        <Subtitle>Credits</Subtitle>
                         <ScrollContainer>
-                            {details.cast.map((cast : CastMember, index: number) => (
+                            {details.cast.map((cast: CastMember, index: number) => (
                                 <CreditsCard
-                                    key={`${cast.name}-${cast.character}-${index}`}
+                                    key={`cast-${cast.name}-${index}`}
                                     name={cast.name}
                                     role={cast.character}
                                     profilePath={cast.profile_path}
                                 />
                             ))}
-                        </ScrollContainer>
-                    </Section>
-
-                    <Section>
-                        <Subtitle>Crew</Subtitle>
-                        <ScrollContainer>
-                            {details.crew.map((crew:CrewMember, index:number) => (
+                            {details.crew.map((crew: CrewMember, index: number) => (
                                 <CreditsCard
-                                    key={`${crew.name}-${crew.job}-${index}`}
+                                    key={`crew-${crew.name}-${index}`}
                                     name={crew.name}
                                     role={crew.job}
                                     profilePath={crew.profile_path}
@@ -108,7 +154,6 @@ const MovieDetails = () => {
                             ))}
                         </ScrollContainer>
                     </Section>
-
                     <Section>
                         <Subtitle>Gallery</Subtitle>
                         <ScrollContainer>
@@ -133,8 +178,6 @@ const MovieDetails = () => {
                     )}
 
                 </>
-            ) : (
-                <p>Loading...</p>
             )}
         </DetailsContainer>
     );

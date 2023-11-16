@@ -3,7 +3,7 @@ import { MovieSummary, MovieDetails } from './types'; // Replace with the actual
 
 const BASE_URL = 'http://localhost:8080';
 
-export const constructImageUrl = (path: string): string => {
+export const constructImageUrl = (path?: string): string => {
     return `https://image.tmdb.org/t/p/original/${path}`;
 };
 
