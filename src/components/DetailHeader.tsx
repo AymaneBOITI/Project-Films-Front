@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import {constructImageUrl, getBrowserLanguage} from '../services/apiService';
 import { MovieDetails as MovieDetailsType } from '../services/types';
+import DEFAULT_IMAGE from "../assets/NoFilm.png";
 
 const Section = styled.section`
   padding: 1%;
@@ -55,7 +56,7 @@ const RatingText = styled.text`
 const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
     const language = getBrowserLanguage();
     const { poster_path, original_title, overview, runtime, release_date, vote_average, genres } = details;
-    const posterSrc = poster_path ? constructImageUrl(poster_path) : '';
+    const posterSrc = poster_path ? constructImageUrl(poster_path) : DEFAULT_IMAGE;
     const formattedGenres = genres.map(genre => genre.name).join(', ');
     const rating = vote_average * 10;
     const circumference = 2 * Math.PI * 15.9155;

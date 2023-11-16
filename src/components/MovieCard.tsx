@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { MovieSummary } from '../services/types';
 import {constructImageUrl} from "../services/apiService.ts";
-
+import DEFAULT_IMAGE from '../assets/NoFilm.png';
 
 interface MovieCardProps {
     movie: MovieSummary;
@@ -59,8 +59,8 @@ const RatingText = styled.text`
 `;
 const MovieCard = ({ movie }: MovieCardProps) => {
     const navigate = useNavigate();
-    const rating = movie.voteAverage * 10; // Assuming voteAverage is between 0 and 10
-    const circumference = 2 * Math.PI * 15.9155; // Assuming radius is 15.9155 for the SVG circle
+    const rating = movie.voteAverage * 10;
+    const circumference = 2 * Math.PI * 15.9155;
     const strokeDashoffset = circumference - (rating / 100) * circumference;
 
     const handleMovieClick = () => {
@@ -69,7 +69,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
 
     return (
         <Card onClick={handleMovieClick}>
-            <Poster src={constructImageUrl(movie.posterPath)} alt={movie.title} />
+            <Poster src={movie.posterPath ? constructImageUrl(movie.posterPath) : DEFAULT_IMAGE}  />
             <Title>{movie.title}</Title>
             <RatingCircle width="42" height="42">
                 <circle className="background" cx="21" cy="21" r="15.9155" fill="rgb(24, 31, 41)" />
