@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from '@emotion/styled';
 import MovieCard from './MovieCard';
-import { MovieSummary } from '../services/types'; // Make sure to import your actual type definitions
+import { MovieSummary } from '../services/types';
+import {searchMovies} from "../services/apiService.ts";
+import SearchBar from "./SearchBar.tsx"; // Make sure to import your actual type definitions
 
 const TabsContainer = styled.div`
   /*background: #333;*/
@@ -45,15 +47,7 @@ const Title = styled.h1`
       font-size: 2rem;
     }
   `;
-    const Input = styled.input`
-    padding-left: 1rem;
-    border-radius: 9999px;
-    @media screen and (max-width: 1150px) {
-      min-width: 100%;
-    } 
-    height: 35px;
-    border: none;
-  `;
+
 
 const MoviesGrid = styled.div`
   display: grid;
@@ -74,11 +68,27 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     const loadMovies = useCallback(async () => {
         const newMovies = await fetchMoviesByCategory(activeCategory, page);
         setHasMore(newMovies.length > 0);
         setMovies((prevMovies) => [...prevMovies, ...newMovies]);
     }, [activeCategory, page, fetchMoviesByCategory]);
+    useEffect(() => {
+        const load = async () => {
+            let newMovies: any[] = [];
+            if (activeCategory === 'search') {
+                newMovies = await searchMovies(searchQuery, page);
+            } else {
+                newMovies = await fetchMoviesByCategory(activeCategory, page);
+            }
+            setHasMore(newMovies.length > 0);
+            setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+        };
+
+        load();
+    }, [activeCategory, page, searchQuery]);
 
     useEffect(() => {
         loadMovies();
@@ -91,6 +101,15 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
     useEffect(() => {
         loadMovies();
     }, [page]);
+
+    const handleSearch = (query: string) => {
+        if (query !== searchQuery) {
+            setSearchQuery(query);
+            setMovies([]);
+            setPage(1);
+            setActiveCategory('search'); // Set active category to "search"
+        }
+    };
 
     return (
         <>
@@ -107,10 +126,10 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
                             setActiveCategory(category);
                         }}
                     >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                        {category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')}
                     </Tab>
                 ))}
-                <Input  type="text" placeholder="🔎 Search for movie" />
+                <SearchBar onSearch={handleSearch} /> {/* Use the SearchBar component */}
             </TabsContainer>
             <InfiniteScroll
                 dataLength={movies.length}
