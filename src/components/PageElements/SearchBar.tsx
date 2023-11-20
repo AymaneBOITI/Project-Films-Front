@@ -14,7 +14,7 @@ export const SearchBar = ({onSearch}: SearchBarProps) => {
     }, [query, page, onSearch]);
 
     useEffect(() => {
-        const handler = setTimeout(delayedQuery, 2000);
+        const handler = setTimeout(delayedQuery, 1000);
 
         return () => {
             clearTimeout(handler);
