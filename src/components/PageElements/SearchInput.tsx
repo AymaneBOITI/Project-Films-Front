@@ -8,6 +8,7 @@ const SearchInput = styled.input`
   }
   height: 35px;
   border: none;
+  margin-top: 10%;
 `;
 
 export default SearchInput;

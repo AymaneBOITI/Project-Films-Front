@@ -14,10 +14,7 @@ const Tab = styled.button<{ isActive: boolean }>`
   }
 
   @media screen and (max-width: 950px) {
-      /*display: none;*/
-    margin: 5px;
-    padding: 0px;
-    width: 20px;
+      display: none;
     
   }
 `;
