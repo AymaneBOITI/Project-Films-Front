@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MovieSummary, MovieDetails } from './types'; // Replace with the actual path to your types
+import { MovieSummary, MovieDetails } from './types';
 
 const BASE_URL = 'http://localhost:8080';
 

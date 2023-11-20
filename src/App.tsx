@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import MovieList from './components/MovieList';
 import MovieDetails from './components/MovieDetails';
-import { getMoviesByCategory } from './services/apiService'; // Adjust the path as needed
+import { getMoviesByCategory } from './services/apiService';
 
 const App = () => {
     return (
