@@ -5,10 +5,10 @@ const SearchInput = styled.input`
   border-radius: 9999px;
   @media screen and (max-width: 1150px) {
     min-width: 100%;
+    margin-top: 10px;
   }
   height: 35px;
   border: none;
-  margin-top: 10%;
 `;
 
 export default SearchInput;
