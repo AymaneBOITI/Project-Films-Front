@@ -4,7 +4,8 @@ import styled from '@emotion/styled';
 import MovieCard from './MovieCard';
 import { MovieSummary } from '../services/types';
 import {searchMovies} from "../services/apiService.ts";
-import SearchBar from "./SearchBar.tsx"; // Make sure to import your actual type definitions
+import SearchBar from "./SearchBar.tsx";
+import MovieListSkeletons from "./MovieListSkeletons.tsx"; // Make sure to import your actual type definitions
 
 const TabsContainer = styled.div`
   /*background: #333;*/
@@ -18,6 +19,7 @@ const TabsContainer = styled.div`
   @media screen and (max-width: 950px) {
     display: grid;
     justify-content: center;
+    gap: 0rem;
   }
 `;
 
@@ -35,7 +37,11 @@ const Tab = styled.button<{ isActive: boolean }>`
   }
 
   @media screen and (max-width: 950px) {
-      display: none;
+      /*display: none;*/
+    margin: 5px;
+    padding: 0px;
+    width: 20px;
+    
   }
 `;
 
@@ -135,7 +141,7 @@ const MovieList = ({ fetchMoviesByCategory }: MovieListProps) => {
                 dataLength={movies.length}
                 next={loadMoreMovies}
                 hasMore={hasMore}
-                loader={<h4>Loading more movies...</h4>}
+                loader={<MovieListSkeletons />}
                 endMessage={<p>No more movies to show</p>}
             >
                 <MoviesGrid>
