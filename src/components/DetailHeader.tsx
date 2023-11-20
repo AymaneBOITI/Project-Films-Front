@@ -1,67 +1,26 @@
 import React from 'react';
-import styled from '@emotion/styled';
 import {constructImageUrl, getBrowserLanguage} from '../services/apiService';
-import { MovieDetails as MovieDetailsType } from '../services/types';
+import {MovieDetails as MovieDetailsType} from '../services/types';
 import DEFAULT_IMAGE from "../assets/NoFilm.png";
+import DetailHeaderContainer from "./Containers/DetailHeaderContainer.tsx";
+import Image from "./PageElements/Image.tsx";
+import Section from "./Containers/Section.tsx";
+import Title from "./PageElements/Title.tsx";
+import Text from "./PageElements/Text.tsx";
+import TitleContainer from "./Containers/TitleContainer.tsx";
+import RatingCircle from "./PageElements/RatingCircle.tsx";
+import RatingText from "./PageElements/RatingText.tsx";
 
-const Section = styled.section`
-  padding: 1%;
-  font-size: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-
-  
-`;
-
-const Title = styled.h2`
-  margin: 0px;
-`;
-
-const Text = styled.p`
-  margin: 0px;
-  text-align: justify;
-`;
-
-const Image = styled.img`
-  width: 20%;
-  min-width: 300px;
-  padding: 1%;
-  border-radius: 30px;
-  
-`;
 const formatDate = (dateString: string, language: string): string => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {year: 'numeric', month: 'short', day: 'numeric'};
     const date = new Date(dateString);
     return new Intl.DateTimeFormat(language, options).format(date);
 
 };
 
-const DetailHeaderContainer = styled.div`
-    display: flex;
-  @media screen and (max-width: 950px) {
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-`;
-const TitleContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const RatingCircle = styled.svg`
-  margin-left: 10px; 
-`;
-
-const RatingText = styled.text`
-  fill: white;
-  font-size: 12px;
-  font-weight: bold;
-`;
-
-const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
+const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({details}) => {
     const language = getBrowserLanguage();
-    const { poster_path, original_title, overview, runtime, release_date, vote_average, genres } = details;
+    const {poster_path, original_title, overview, runtime, release_date, vote_average, genres} = details;
     const posterSrc = poster_path ? constructImageUrl(poster_path) : DEFAULT_IMAGE;
     const formattedGenres = genres.map(genre => genre.name).join(', ');
     const rating = vote_average * 10;
@@ -70,13 +29,14 @@ const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
 
     return (
         <DetailHeaderContainer>
-            <Image src={posterSrc} alt="Movie Poster" />
+            <Image src={posterSrc} alt="Movie Poster"/>
             <Section>
                 <TitleContainer>
                     <Title>{original_title}</Title>
                     <RatingCircle width="42" height="42">
-                        <circle cx="21" cy="21" r="15.9155" fill="rgb(24, 31, 41)" />
-                        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#21d07a" strokeWidth="3" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} />
+                        <circle cx="21" cy="21" r="15.9155" fill="rgb(24, 31, 41)"/>
+                        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#21d07a" strokeWidth="3"
+                                strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}/>
                         <RatingText x="50%" y="50%" dy=".3em" textAnchor="middle">
                             {`${Math.round(rating)}%`}
                         </RatingText>
@@ -85,7 +45,6 @@ const DetailHeader: React.FC<{ details: MovieDetailsType }> = ({ details }) => {
                 <Text>{overview}</Text>
                 <Text>{formattedGenres}</Text>
                 <Text>{runtime} minutes, {formatDate(release_date, language)}</Text>
-
             </Section>
         </DetailHeaderContainer>
     );

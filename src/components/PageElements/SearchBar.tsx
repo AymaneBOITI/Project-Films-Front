@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import styled from '@emotion/styled';
-
-const SearchContainer = styled.div`
-`;
-
-const SearchInput = styled.input`
-  padding-left: 1rem;
-  border-radius: 9999px;
-  @media screen and (max-width: 1150px) {
-    min-width: 100%;
-  }
-  height: 35px;
-  border: none;
-`;
+import React, {useCallback, useEffect, useState} from 'react';
+import SearchInput from "./SearchInput.tsx";
 
 interface SearchBarProps {
     onSearch: (query: string, page: number) => void;
 }
 
-export const SearchBar = ({ onSearch }: SearchBarProps) => {
+export const SearchBar = ({onSearch}: SearchBarProps) => {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
 
@@ -40,14 +27,14 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
     };
 
     return (
-        <SearchContainer>
+        <>
             <SearchInput
                 type="text"
                 placeholder="🔎 Search for movie"
                 value={query}
                 onChange={handleChange}
             />
-        </SearchContainer>
+        </>
     );
 };
 
