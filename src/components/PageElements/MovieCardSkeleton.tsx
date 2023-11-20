@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import styled from "@emotion/styled";
 
-const movieCardSkeleton = css`
+const MovieCardSkeleton = styled.div`
   width: 100%; 
   height: 24rem;
   border-radius: 0.375rem;
@@ -21,9 +20,5 @@ const movieCardSkeleton = css`
       opacity: 1;
     }
 `;
-
-const MovieCardSkeleton = () => {
-    return <div css={movieCardSkeleton} />;
-};
 
 export default MovieCardSkeleton;

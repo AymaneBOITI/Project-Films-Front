@@ -1,117 +1,22 @@
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
+import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {constructImageUrl, constructYoutubeUrl, getBrowserLanguage, getMovieDetails} from '../services/apiService';
 import CreditsCard from './CreditsCard';
-import { MovieDetails as MovieDetailsType, CastMember, CrewMember } from '../services/types';
+import {CastMember, CrewMember, MovieDetails as MovieDetailsType} from '../services/types';
 import DetailHeader from "./DetailHeader.tsx";
-
-
-
-const DetailsContainer = styled.div`
-  padding: 20px;
-  backdrop-filter: blur(40px);
-`;
-
-interface BackgroundImageProps {
-    url: string;
-}
-const BackgroundImage = styled.div<BackgroundImageProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url(${props => props.url});
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px);
-  z-index: -1;
-`;
-
-const Section = styled.section`
-  margin-bottom: 20px;
-`;
-
-const Subtitle = styled.h3`
-  margin: 0;
-  color: white;
-  font-size: 32px;
-  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
-
-`;
-
-const ScrollContainer = styled.div`
-  overflow-x: auto;
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  white-space: nowrap;
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
-    width: 20%;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
-  }
-`;
-
-const Image = styled.img`
-  max-width: 100%;
-  width: 1200px;
-  vertical-align: middle;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  border-radius: .375rem;
-`;
-
-const TrailerContainer = styled.div`
-  display: grid;
-  justify-content: center;
-  overflow: hidden;
-  width: 100%;
-  background: none;
-  
-`;
-
-const TrailerIframe = styled.iframe`
-  border: none;
-  width: 80vw;
-  height: 80vh;
-  border-radius: 10px;
-  
-`;
-const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 20px;
-  transition: transform 0.3s ease; 
-  &:hover {
-    transform: translateX(-10px); 
-  }
-  `;
-
-const BackIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
-    </svg>
-);
+import DetailsContainer from "./Containers/DetailsContainer.tsx";
+import BackgroundImage from "./PageElements/BackgroundImage.tsx";
+import BackButton from "./PageElements/BackButton.tsx";
+import BackIcon from "./PageElements/BackIcon.tsx";
+import Section from "./Containers/Section.tsx";
+import Subtitle from "./PageElements/Subtitle.tsx";
+import ScrollContainer from "./Containers/ScrollContainer.tsx";
+import TrailerContainer from "./Containers/TrailerContainer.tsx";
+import TrailerIframe from "./PageElements/TrailerIframe.tsx";
+import MovieImage from "./PageElements/MovieImage.tsx";
 
 const MovieDetails = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [details, setDetails] = useState<MovieDetailsType | null>(null);
     const navigate = useNavigate();
     const language = getBrowserLanguage();
@@ -130,12 +35,12 @@ const MovieDetails = () => {
             {details && (
                 <>
                     {details.backdrop_path && (
-                        <BackgroundImage url={constructImageUrl(details.backdrop_path)} />
+                        <BackgroundImage url={constructImageUrl(details.backdrop_path)}/>
                     )}
                     <BackButton onClick={goBack}>
-                        <BackIcon /> {backButtonLabel}
+                        <BackIcon/> {backButtonLabel}
                     </BackButton>
-                    <DetailHeader details={details} />
+                    <DetailHeader details={details}/>
                     {(details.cast.length > 0 || details.crew.length > 0) && (
                         <Section>
                             <Subtitle>Credits</Subtitle>
@@ -164,7 +69,8 @@ const MovieDetails = () => {
                             <Subtitle>Gallery</Subtitle>
                             <ScrollContainer>
                                 {details.imagePaths.map((imagePath: string, index: number) => (
-                                    <Image key={index} src={constructImageUrl(imagePath)} alt={`Movie scene ${index}`} />
+                                    <MovieImage key={index} src={constructImageUrl(imagePath)}
+                                                alt={`Movie scene ${index}`}/>
                                 ))}
                             </ScrollContainer>
                         </Section>
@@ -176,7 +82,6 @@ const MovieDetails = () => {
                                 <TrailerIframe
                                     src={constructYoutubeUrl(details.trailerKey)}
                                     title="movie-trailer"
-                                    frameBorder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 ></TrailerIframe>
