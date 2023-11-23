@@ -8,6 +8,7 @@ const TabsContainer = styled.div`
   gap: 2rem;
   justify-content: space-between;
   margin: 2%;
+  margin-bottom: 0px;
 
   @media screen and (max-width: 950px) {
     display: grid;

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 const Poster = styled.img`
   max-width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 `;
 

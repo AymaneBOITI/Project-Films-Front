@@ -7,9 +7,8 @@ import Image from "./PageElements/Image.tsx";
 import Section from "./Containers/Section.tsx";
 import Title from "./PageElements/Title.tsx";
 import Text from "./PageElements/Text.tsx";
-import TitleContainer from "./Containers/TitleContainer.tsx";
-import RatingCircle from "./PageElements/RatingCircle.tsx";
-import RatingText from "./PageElements/RatingText.tsx";
+import {RatingCircle , TitleContainer, RatingText} from "./Containers/RatingHeaderDetailMovie.tsx";
+
 
 const formatDate = (dateString: string, language: string): string => {
     const options: Intl.DateTimeFormatOptions = {year: 'numeric', month: 'short', day: 'numeric'};
