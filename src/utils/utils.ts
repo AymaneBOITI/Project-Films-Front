@@ -1,7 +1,7 @@
 export interface Member {
     name: string;
-    character?: string; // Optional for crew members
-    job?: string; // Optional for cast members
+    character?: string;
+    job?: string; 
     profile_path?: string;
 }
 export interface Genre {

@@ -25,11 +25,11 @@ const MovieDetails = () => {
     const backButtonLabel = language.startsWith('fr') ? 'Retour' : 'Back';
 
     if (isLoading) {
-        return <div>Loading...</div>; // Ou un composant de chargement personnalisé
+        return <div>Loading...</div>;
     }
 
     if (isError || !details) {
-        return <div>Erreur lors du chargement des détails du film.</div>; // Ou un composant d'erreur personnalisé
+        return <div>Erreur lors du chargement des détails du film.</div>;
     }
 
     return (
