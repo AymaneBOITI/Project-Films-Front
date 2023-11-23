@@ -3,7 +3,6 @@ import {MovieSummary} from '../services/types';
 import {constructImageUrl} from "../services/apiService.ts";
 import DEFAULT_IMAGE from '../assets/NoFilm.png';
 import Card from "./PageElements/Card.tsx";
-import Title from "./PageElements/Title.tsx";
 import Poster from "./PageElements/Poster.tsx";
 import RatingCircle from "./PageElements/RatingCircle.tsx";
 import RatingText from "./PageElements/RatingText.tsx";
@@ -25,7 +24,7 @@ const MovieCard = ({movie}: MovieCardProps) => {
     return (
         <Card onClick={handleMovieClick}>
             <Poster src={movie.posterPath ? constructImageUrl(movie.posterPath) : DEFAULT_IMAGE}/>
-            <Title>{movie.title}</Title>
+            {/*<Title>{movie.title}</Title>*/}
             <RatingCircle width="42" height="42">
                 <circle className="background" cx="21" cy="21" r="15.9155" fill="rgb(24, 31, 41)"/>
                 <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#204529" strokeWidth="3"
