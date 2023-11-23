@@ -22,11 +22,14 @@ const SearchBar = ({ onSearch, onClear }: SearchBarProps) => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
+        if (event.target.value === '') {
+            onSearch(''); 
+        }
     };
 
     const handleClear = () => {
         setQuery('');
-        onClear(); 
+        onClear();
     };
 
     return (
