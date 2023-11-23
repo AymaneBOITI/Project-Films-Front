@@ -1,68 +1,36 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './MovieCard';
-import {MovieSummary} from '../services/types';
-import {searchMovies} from "../services/apiService.ts";
-import SearchBar from "./PageElements/SearchBar.tsx";
-import MovieListSkeletons from "./MovieListSkeletons.tsx";
-import TabsContainer from "./Containers/TabsContainer.tsx";
-import Title from "./PageElements/Title.tsx";
-import Tab from "./PageElements/Tab.tsx";
-import MoviesGrid from "./Containers/MoviesGrid.tsx";
-
-interface MovieListProps {
-    fetchMoviesByCategory: (category: string, page: number) => Promise<MovieSummary[]>;
-}
+import { MovieSummary } from '../services/types';
+import {getBrowserLanguage, useMoviesByCategory, useSearchMovies} from "../services/apiService";
+import SearchBar from "./PageElements/SearchBar";
+import MovieListSkeletons from "./MovieListSkeletons";
+import TabsContainer from "./Containers/TabsContainer";
+import Title from "./PageElements/Title";
+import Tab from "./PageElements/Tab";
+import MoviesGrid from "./Containers/MoviesGrid";
 
 const categories = ['popular', 'upcoming', 'top_rated', 'now_playing'];
 
-const MovieList = ({fetchMoviesByCategory}: MovieListProps) => {
-    const [activeCategory, setActiveCategory] = useState(categories[0]);
-    const [movies, setMovies] = useState<MovieSummary[]>([]);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
+const MovieList = () => {
+    const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const moviesQuery = useMoviesByCategory(activeCategory);
+    const searchQueryResults = useSearchMovies(searchQuery);
 
-    const loadMovies = useCallback(async () => {
-        const newMovies = await fetchMoviesByCategory(activeCategory, page);
-        setHasMore(newMovies.length > 0);
-        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-    }, [activeCategory, page, fetchMoviesByCategory]);
-    useEffect(() => {
-        const load = async () => {
-            let newMovies: any[] = [];
-            if (activeCategory === 'search') {
-                newMovies = await searchMovies(searchQuery, page);
-            } else {
-                newMovies = await fetchMoviesByCategory(activeCategory, page);
-            }
-            setHasMore(newMovies.length > 0);
-            setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-        };
-
-        load();
-    }, [activeCategory, page, searchQuery]);
-
-    useEffect(() => {
-        loadMovies();
-    }, [activeCategory, loadMovies]);
-
-    const loadMoreMovies = () => {
-        setPage((prevPage) => prevPage + 1);
-    };
-
-    useEffect(() => {
-        loadMovies();
-    }, [page]);
+    const isSearchActive = activeCategory === 'search' && searchQuery;
+    const queryResults = isSearchActive ? searchQueryResults : moviesQuery;
+    const movies = queryResults.data?.pages.flat();
 
     const handleSearch = (query: string) => {
         if (query !== searchQuery) {
             setSearchQuery(query);
-            setMovies([]);
-            setPage(1);
             setActiveCategory('search');
         }
     };
+    const language = getBrowserLanguage();
+    const noMoviesMessage = language.startsWith('fr') ? 'Film non trouvé !' : 'Film not found!';
+    const showNoMoviesMessage = isSearchActive && movies?.length === 0;
 
     return (
         <>
@@ -73,9 +41,10 @@ const MovieList = ({fetchMoviesByCategory}: MovieListProps) => {
                         key={category}
                         isActive={activeCategory === category}
                         onClick={() => {
-                            setPage(1);
-                            setMovies([]);
                             setActiveCategory(category);
+                            if (category !== 'search') {
+                                setSearchQuery('');
+                            }
                         }}
                     >
                         {category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')}
@@ -84,16 +53,20 @@ const MovieList = ({fetchMoviesByCategory}: MovieListProps) => {
                 <SearchBar onSearch={handleSearch}/>
             </TabsContainer>
             <InfiniteScroll
-                dataLength={movies.length}
-                next={loadMoreMovies}
-                hasMore={hasMore}
+                dataLength={movies?.length || 0}
+                next={() => queryResults.fetchNextPage()}
+                hasMore={!!queryResults.hasNextPage}
                 loader={<MovieListSkeletons/>}
-                endMessage={<p>No more movies to show</p>}
             >
                 <MoviesGrid>
-                    {movies.map((movie) => (
-                        <MovieCard key={movie.id} movie={movie}/>
-                    ))}
+                    {movies?.length ? (
+                        movies.map((movie: MovieSummary) => (
+                            <MovieCard key={movie.id} movie={movie}/>
+                        ))
+                    ) : null}
+                    {showNoMoviesMessage && (
+                        <p style={{ textAlign: 'center' }}>{noMoviesMessage}</p>
+                    )}
                 </MoviesGrid>
             </InfiniteScroll>
         </>

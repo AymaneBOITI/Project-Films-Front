@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import MovieList from './components/MovieList';
 import MovieDetails from './components/MovieDetails';
-import { getMoviesByCategory } from './services/apiService';
+
+const queryClient = new QueryClient();
 
 const App = () => {
     return (
-        <ThemeProvider>
-            <Router>
-                <AppContent />
-            </Router>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+            <ThemeProvider>
+                <Router>
+                    <AppContent />
+                </Router>
+            </ThemeProvider>
+        </QueryClientProvider>
     );
 };
 
@@ -25,7 +29,7 @@ const AppContent = () => {
     return (
         <div className={`app ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
             <Routes>
-                <Route path="/" element={<MovieList fetchMoviesByCategory={getMoviesByCategory} />} />
+                <Route path="/" element={<MovieList />} />
                 <Route path="/movie/:id" element={<MovieDetails />} />
             </Routes>
         </div>

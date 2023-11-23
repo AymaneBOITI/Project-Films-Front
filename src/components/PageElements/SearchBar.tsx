@@ -1,40 +1,42 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import SearchInput from "./SearchInput.tsx";
+import React, { useState } from 'react';
+import { useDebounce } from 'react-use';
+import SearchInput from "./SearchInput";
 
 interface SearchBarProps {
-    onSearch: (query: string, page: number) => void;
+    onSearch: (query: string) => void;
 }
 
-export const SearchBar = ({onSearch}: SearchBarProps) => {
-    const [query, setQuery] = useState('');
-    const [page, setPage] = useState(1);
+const SearchBar = ({ onSearch }: SearchBarProps) => {
+    const [query, setQuery] = useState<string>('');
 
-    const delayedQuery = useCallback(() => {
-        onSearch(query, page);
-    }, [query, page, onSearch]);
-
-    useEffect(() => {
-        const handler = setTimeout(delayedQuery, 1000);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [query, delayedQuery]);
+    useDebounce(
+        () => {
+            if (query) {
+                onSearch(query);
+            }
+        },
+        1000,
+        [query]
+    );
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
-        setPage(1);
+    };
+
+    const handleClick = () => {
+        if (query) {
+            onSearch(query);
+        }
     };
 
     return (
-        <>
-            <SearchInput
-                type="text"
-                placeholder="🔎 Search for movie"
-                value={query}
-                onChange={handleChange}
-            />
-        </>
+        <SearchInput
+            type="text"
+            placeholder="🔎 Search for movie"
+            value={query}
+            onChange={handleChange}
+            onClick={handleClick}
+        />
     );
 };
 
