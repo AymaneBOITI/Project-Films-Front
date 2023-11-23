@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useQuery, useInfiniteQuery } from 'react-query';
 import { MovieSummary, MovieDetails } from './types';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://172.20.10.2:8080';
 
 export const constructImageUrl = (path?: string): string => {
     return `https://image.tmdb.org/t/p/original/${path}`;
