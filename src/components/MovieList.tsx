@@ -3,7 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieCard from './MovieCard';
 import { MovieSummary } from '../services/types';
 import {getBrowserLanguage, useMoviesByCategory, useSearchMovies} from "../services/apiService";
-import SearchBar from "./PageElements/SearchBar";
+import SearchBar from "./SearchBar.tsx";
 import MovieListSkeletons from "./MovieListSkeletons";
 import TabsContainer from "./Containers/TabsContainer";
 import Title from "./PageElements/Title";
@@ -23,11 +23,14 @@ const MovieList = () => {
     const movies = queryResults.data?.pages.flat();
 
     const handleSearch = (query: string) => {
-        if (query !== searchQuery) {
-            setSearchQuery(query);
-            setActiveCategory('search');
-        }
+        setSearchQuery(query);
+        setActiveCategory(query ? 'search' : 'popular');
     };
+
+    const handleClearSearch = () => {
+        setActiveCategory('popular');
+    };
+
     const language = getBrowserLanguage();
     const noMoviesMessage = language.startsWith('fr') ? 'Film non trouvé !' : 'Film not found!';
     const showNoMoviesMessage = isSearchActive && movies?.length === 0;
@@ -50,7 +53,7 @@ const MovieList = () => {
                         {category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')}
                     </Tab>
                 ))}
-                <SearchBar onSearch={handleSearch}/>
+                <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
             </TabsContainer>
             <InfiniteScroll
                 dataLength={movies?.length || 0}
